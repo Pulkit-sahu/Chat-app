@@ -76,8 +76,7 @@ def get_admins():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/chat/info', methods=['GET'])
-@jwt_required()
+@app.route('/chat/info', methods=['GET']
 def get_profile():
     try:
         current_user = get_jwt_identity()
