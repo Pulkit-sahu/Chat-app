@@ -79,6 +79,7 @@ def get_admins():
 @app.route('/chat/info', methods=['GET'])
 def get_profile():
     try:
+        verify_jwt_in_request()
         current_user = get_jwt_identity()
         user = User.query.get(current_user['id'])
         if user:
