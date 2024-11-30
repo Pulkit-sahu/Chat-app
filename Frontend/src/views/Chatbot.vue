@@ -17,8 +17,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import Chatbox from 'src/components/Chatbox.vue';
-import UserList from 'src/components/UserList.vue';
+import Chatbox from '/src/components/Chatbox.vue';
+import UserList from '/src/components/UserList.vue';
 import { onClickOutside } from '@vueuse/core';
 import useChatbotStore from 'src/store/chatbotStore';
 
