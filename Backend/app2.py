@@ -15,7 +15,7 @@ CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Load app configuration (replace with your own config)
-app.config['allow_unsafe_werkzeug']= 'True'
+app.config['allow_unsafe_werkzeug']= True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///again.db'  # Example database URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'supersecretkey'  # Change to your secret key
