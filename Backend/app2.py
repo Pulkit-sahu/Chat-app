@@ -68,10 +68,15 @@ def login():
     user = User.query.filter_by(email=data['email'], role=data['role']).first()
 
     if user and check_password_hash(user.password, data['password']):
+<<<<<<< HEAD
         # Serialize the identity as a JSON string
         identity = json.dumps({'id': str(user.id), 'role': user.role})
         access_token = create_access_token(identity=identity, expires_delta=timedelta(days=1))
         refresh_token = create_refresh_token(identity=identity)
+=======
+        access_token = create_access_token(identity={'id': str(user.id), 'role': user.role},expires_delta=timedelta(days=1))
+        refresh_token = create_refresh_token(identity={'id': str(user.id), 'role': user.role})
+>>>>>>> 5dd521133f9ed546c81ff15dff746f282928b902
         return jsonify(access_token=access_token, refresh_token=refresh_token, name=user.name), 200
 
     return jsonify({'msg': 'Invalid credentials'}), 401
