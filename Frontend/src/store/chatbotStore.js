@@ -47,6 +47,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
     }
 
     const updateReadStatus = (senderId, receiverId) => {
+        console.log(senderId,receiverId)
         chats.value = chats.value.map(chat => {
             if (chat.sender_id === senderId && chat.receiver_id === receiverId) {
                 return { ...chat, read_status: true };
@@ -157,6 +158,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
         if (socket.value) {
             socket.value.emit('mark_message_read', { sender_id: senderId });
             updateReadStatus(senderId, profileData.value.id);
+
         }
     };
 

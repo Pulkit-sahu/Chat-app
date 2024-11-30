@@ -143,7 +143,9 @@ function formatDate(timestamp) {
         scrollToBottom();
         if (chatbotStore.isChatboxOpen) {
           newChats.forEach(chat => {
+            
             if (chat.sender_id === chatbotStore.selectedUser.id && !chat.read_status) {
+              
             
               chatbotStore.markMessageRead(chat.sender_id);
               const onlineAudio = new Audio('../assets/online_.mp3')

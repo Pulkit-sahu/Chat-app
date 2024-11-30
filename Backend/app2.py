@@ -10,8 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 # Configure CORS
-CORS(app, supports_credentials=True, origins=["http://0.0.0.0:5173", "http://localhost:5173", "http://192.168.29.57:5173", "http://localhost:5174"])
-
+CORS(app, supports_credentials=True)
 # Initialize SocketIO with CORS allowed origins
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -54,17 +53,30 @@ def register():
     db.session.commit()
     return jsonify({'msg': 'Registration successful'}), 201
 
-@app.route('/auth/login', methods=['POST'])
+from flask import jsonify, request
+from flask_jwt_extended import create_access_token, create_refresh_token
+import json
+from datetime import timedelta
+
+from flask import jsonify, request
+from flask_jwt_extended import create_access_token, create_refresh_token
+import json
+
+@app.route('/auth/login', methods=['POST']) 
 def login():
     data = request.json
     user = User.query.filter_by(email=data['email'], role=data['role']).first()
 
     if user and check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity={'id': user.id, 'role': user.role},expires_delta=timedelta(days=1))
-        refresh_token = create_refresh_token(identity={'id': user.id, 'role': user.role})
+        # Serialize the identity as a JSON string
+        identity = json.dumps({'id': str(user.id), 'role': user.role})
+        access_token = create_access_token(identity=identity, expires_delta=timedelta(days=1))
+        refresh_token = create_refresh_token(identity=identity)
         return jsonify(access_token=access_token, refresh_token=refresh_token, name=user.name), 200
 
     return jsonify({'msg': 'Invalid credentials'}), 401
+
+
 
 # Routes for Chat (users, messages, send)
 @app.route('/chat/admins', methods=['GET'])
@@ -76,18 +88,44 @@ def get_admins():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+from flask import jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import json
+
+from flask import jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import json
+
 @app.route('/chat/info', methods=['GET'])
 @jwt_required()
 def get_profile():
     try:
-        current_user = get_jwt_identity()
+        # Retrieve and deserialize the token identity
+        current_user = json.loads(get_jwt_identity())
+        
+        # Debugging: Log the identity payload
+        print(f"Decoded token identity: {current_user}")
+
+        # Ensure `id` exists in the payload
+        if not current_user or 'id' not in current_user:
+            return jsonify({"error": "Invalid token"}), 401
+
+        # Fetch user from database using the ID
         user = User.query.get(current_user['id'])
-        if user:
-            user_data = {"id": user.id, "name": user.name, "email": user.email, "role": user.role}
-            return jsonify(user_data), 200
-        return jsonify({"error": "User not found"}), 404
+        user_data = {"id":int(user.id),"name":user.name,"email":user.email,"role":user.role}
+        return jsonify(user_data),200
+        print(f"Fetched User: {user}")
+        
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Prepare response
+        
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
+
+
 
 @app.route('/chat/users', methods=['GET'])
 def get_users():
@@ -101,8 +139,8 @@ def get_users():
 @app.route('/chat/messages/<int:receiver_id>', methods=['GET'])
 @jwt_required()
 def get_messages(receiver_id):
-    current_user = get_jwt_identity()
-    current_user_id = current_user['id']
+    current_user = json.loads(get_jwt_identity())
+    current_user_id = int(current_user['id'])
     
     try:
         messages = Chat.query.filter(
@@ -128,8 +166,8 @@ def get_messages(receiver_id):
 @app.route('/chat/loaded', methods=['GET'])
 @jwt_required()
 def get_messages_loaded():
-    current_user = get_jwt_identity()
-    current_user_id = current_user['id']
+    current_user = json.loads(get_jwt_identity())
+    current_user_id = int(current_user['id'])
     try:
         messages = Chat.query.filter(
             ((Chat.sender_id == current_user_id) ) | ((Chat.receiver_id == current_user_id))
@@ -151,16 +189,18 @@ def get_messages_loaded():
         return jsonify({"error": f"An error occurred while fetching messages: {e}"}), 500
         
 @socketio.on('smessage')
+@jwt_required()
 def handle_send_message(data):
     try:
-        verify_jwt_in_request()
-        user_identity = get_jwt_identity()
+        
+        user_identity = json.loads(get_jwt_identity())
         
         receiver_id = data['receiver_id']
+        
         content = data['content']
         
         new_message = Chat(
-            sender_id=user_identity['id'],
+            sender_id=int(user_identity['id']),
             receiver_id=receiver_id,
             content=content,
             timestamp=datetime.utcnow()
@@ -171,7 +211,7 @@ def handle_send_message(data):
         
         # Emit message to the specific room
         message_data = {
-            'sender_id': user_identity['id'],
+            'sender_id': int(user_identity['id']),
             'receiver_id': receiver_id,
             'content': content,
             'timestamp': str(new_message.timestamp),
@@ -185,13 +225,14 @@ def handle_send_message(data):
 
 # WebSocket event for marking messages as read
 @socketio.on('mark_message_read')
+@jwt_required()
 def handle_mark_message_read(data):
     try:
-        verify_jwt_in_request()
-        user_identity = get_jwt_identity()
         
-        sender_id = data['sender_id']
-        receiver_id = user_identity['id']
+        user_identity = json.loads(get_jwt_identity())
+        
+        sender_id = int(data['sender_id'])
+        receiver_id = int(user_identity['id'])
         print(data)
 
         # Update the read status in the database
@@ -205,12 +246,14 @@ def handle_mark_message_read(data):
 
 # WebSocket connection and disconnection event handling
 @socketio.on('connect')
-def handle_connect():
-    verify_jwt_in_request()
-    user_identity = get_jwt_identity()
-    user_id = user_identity['id']  
+@jwt_required()
+def handle_connect(auth=None):
+    
+    user_identity = json.loads(get_jwt_identity())
+    user_id = int(user_identity['id'])
+    print(user_id)  
     message_data = {
-            'User_id': user_identity['id'],
+            'User_id': int(user_identity['id']),
             'Connection' : True,
             } 
     print(message_data)

@@ -36,6 +36,7 @@ const notifications = computed(() => chatbotStore.getNotifications[props.user.id
 
 const handleClick = () => {
   chatbotStore.selectedUser = props.user;
+  console.log(chatbotStore.selectedUser)
   chatbotStore.setChatboxOpen(true);
   if (notifications.value > 0) {
     chatbotStore.markMessageRead(props.user.id);
