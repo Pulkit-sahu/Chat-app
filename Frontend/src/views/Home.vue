@@ -74,8 +74,9 @@ const closeChatBox = () => {
 </template>
 
 <script setup>
+
 import { onMounted } from 'vue';
-import Chatbot from './Chatbot.vue';
+import Chatbot from '/src/views/Chatbot.vue';
 import useChatbotStore from '../store/chatbotStore';
 const chatbotStore = useChatbotStore()
 
