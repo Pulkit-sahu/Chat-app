@@ -1,4 +1,3 @@
-import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, decode_token, jwt_required, create_access_token, create_refresh_token, get_jwt_identity, verify_jwt_in_request
@@ -16,9 +15,7 @@ CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Load app configuration (replace with your own config)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///again.db'  # Example database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///again.db'  # Example database URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'supersecretkey'  # Change to your secret key
 
@@ -273,6 +270,6 @@ def handle_disconnect():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    socketio.run(app,allow_unsafe_werkzeug=True, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
 
 
