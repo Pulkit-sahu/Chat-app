@@ -21,7 +21,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
         try {
             loading.value = true;
             const authToken = localStorage.getItem('accessToken');
-            const res = await axios.get('https://chat-app-xtention.onrender.com/chat/loaded', {
+            const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/loaded', {
                 headers: {
                     Authorization: `Bearer ${authToken}`
                 }
@@ -82,7 +82,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
 
     const getProfileData = async () => {
         try {
-            const res = await axios.get('https://chat-app-xtention.onrender.com/chat/info' , {
+            const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/info' , {
                 headers : {
                     Authorization : `Bearer ${authToken}`
                 }
@@ -99,7 +99,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
 
     const setupSocket = () => {
         const authToken = localStorage.getItem('accessToken');
-        socket.value = io('https://chat-app-xtention.onrender.com', {
+        socket.value = io('https://chat-app-e0vz.onrender.com', {
             query: {
                 token: authToken
             },
@@ -168,13 +168,13 @@ const useChatbotStore = defineStore('chatbot' , () => {
             
             if(role == 'admin')
             {
-                const res = await axios.get('https://chat-app-xtention.onrender.com/chat/users', {
+                const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/users', {
                     headers : {
                         Authorization : `Bearer ${authToken}`
                     }
                 })
                 userList.value = res.data;
-                const res2 = await axios.get('https://chat-app-xtention.onrender.com/chat/admins', {
+                const res2 = await axios.get('https://chat-app-e0vz.onrender.com/chat/admins', {
                     headers : {
                         Authorization : `Bearer ${authToken}`
                     }
@@ -183,7 +183,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
                 console.log(userList.value)
             }
             else{
-                const res = await axios.get('https://chat-app-xtention.onrender.com/chat/admins', {
+                const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/admins', {
                     headers : {
                         Authorization : `Bearer ${authToken}`
                     }
