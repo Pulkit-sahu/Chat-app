@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, decode_token, jwt_required, create_access_token, create_refresh_token, get_jwt_identity, verify_jwt_in_request
@@ -15,7 +16,18 @@ CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Load app configuration (replace with your own config)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///again.db'  # Example database URI
+# Replace these values with your PostgreSQL database credentials
+# POSTGRES_USER = 'postgres'
+# POSTGRES_PASSWORD = 'star'
+# POSTGRES_DB = 'Chat-app-xtention'
+# POSTGRES_HOST = 'localhost'  # or your server's hostname
+# POSTGRES_PORT = 5432         # default PostgreSQL port
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('postgresql://database_url_sz43_user:F1gif9Xfcmq5JP4pXWYDyNQ0p3pIncpE@dpg-ct6l4opopnds73dh4a00-a/database_url_sz43', 'sqlite:///local.db')  # Fallback to SQLite for local development  # Example database URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'supersecretkey'  # Change to your secret key
 
