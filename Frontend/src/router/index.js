@@ -7,18 +7,26 @@ import Profile from "../views/Profile.vue";
 
 // Function to check if the user is authenticated
 const isAuthenticated = () => {
-  // Check if an access token exists in localStorage or sessionStorage
-  // You can replace this with your own authentication check logic
-  return localStorage.getItem('accessToken') !== "null";
+  // Check if an access token exists in localStorage
+  // Adjust the condition to also handle null or undefined
+  const token = localStorage.getItem('accessToken');
+  return token && token.trim() !== "";
 };
 
 const routes = [
   {
     path: '/',
+    redirect: () => {
+      // Redirect to login if not authenticated
+      return isAuthenticated() ? '/home' : '/login';
+    },
+  },
+  {
+    path: '/',
     component: HomeLayout,
     children: [
       {
-        path: '/',
+        path: 'home',
         component: Home,
         beforeEnter: (to, from, next) => {
           // If not authenticated, redirect to login page
@@ -30,7 +38,7 @@ const routes = [
         }
       },
       {
-        path: '/profile',
+        path: 'profile',
         component: Profile,
         beforeEnter: (to, from, next) => {
           // If not authenticated, redirect to login page
@@ -52,7 +60,7 @@ const router = createRouter({
   routes
 });
 
-// Global navigation guard (optional, can be used for redirecting unauthenticated users to the login page)
+// Global navigation guard
 router.beforeEach((to, from, next) => {
   // If trying to access protected route without being authenticated, redirect to login
   if (!isAuthenticated() && to.path !== '/login' && to.path !== '/register') {
