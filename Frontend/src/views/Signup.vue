@@ -78,7 +78,7 @@ const formData = reactive({
 })
 const handleRegister = async () => {
     try {
-    const res = await axios.post("https://chat-app-xtention.onrender.com/auth/register" , formData);
+    const res = await axios.post("https://chat-app-e0vz.onrender.com/auth/register" , formData);
     console.log(res);
     
     router.push("/login")
