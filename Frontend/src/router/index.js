@@ -8,8 +8,8 @@ import Profile from "../views/Profile.vue";
 // Function to check if the user is authenticated
 const isAuthenticated = () => {
   // Check if an access token exists in localStorage
-  // Adjust the condition to also handle null or undefined
   const token = localStorage.getItem('accessToken');
+  // Return true only if the token exists and is not empty
   return token && token.trim() !== "";
 };
 
@@ -17,9 +17,9 @@ const routes = [
   {
     path: '/',
     redirect: () => {
-      // Redirect to login if not authenticated
+      // Redirect to home if authenticated, otherwise to login
       return isAuthenticated() ? '/home' : '/login';
-    },
+    }
   },
   {
     path: '/',
@@ -29,11 +29,10 @@ const routes = [
         path: 'home',
         component: Home,
         beforeEnter: (to, from, next) => {
-          // If not authenticated, redirect to login page
           if (!isAuthenticated()) {
-            next('/login');
+            next('/login'); // Redirect to login if not authenticated
           } else {
-            next(); // Proceed to home page if authenticated
+            next(); // Proceed to home
           }
         }
       },
@@ -41,11 +40,10 @@ const routes = [
         path: 'profile',
         component: Profile,
         beforeEnter: (to, from, next) => {
-          // If not authenticated, redirect to login page
           if (!isAuthenticated()) {
-            next('/login');
+            next('/login'); // Redirect to login if not authenticated
           } else {
-            next(); // Proceed to profile if authenticated
+            next(); // Proceed to profile
           }
         }
       }
@@ -62,7 +60,7 @@ const router = createRouter({
 
 // Global navigation guard
 router.beforeEach((to, from, next) => {
-  // If trying to access protected route without being authenticated, redirect to login
+  // Redirect to login if trying to access protected routes without authentication
   if (!isAuthenticated() && to.path !== '/login' && to.path !== '/register') {
     next('/login');
   } else {
@@ -71,4 +69,3 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
-
