@@ -9,7 +9,7 @@ import Profile from "../views/Profile.vue";
 const isAuthenticated = () => {
   // Check if an access token exists in localStorage or sessionStorage
   // You can replace this with your own authentication check logic
-  return localStorage.getItem('accessToken') !== "";
+  return localStorage.getItem('accessToken') !== "null";
 };
 
 const routes = [

@@ -11,7 +11,7 @@ const router = useRouter();
 
   const isMenuOpen = ref(false)
   const handleLogout = () => {
-    localStorage.setItem('accessToken' , "");
+    localStorage.setItem('accessToken' , "null");
 
     router.push("/login")
   }

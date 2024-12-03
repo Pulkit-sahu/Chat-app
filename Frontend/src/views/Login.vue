@@ -73,11 +73,7 @@ const handleLogin = async () => {
 
     const formData = {email : email.value , password : password.value , role : role.value}
     try {
-<<<<<<< HEAD
-        const res = await axios.post("http://localhost:5000/auth/login" , formData);
-=======
         const res = await axios.post("https://chat-app-e0vz.onrender.com/auth/login" , formData);
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
     
         localStorage.setItem("accessToken" , res.data.access_token);
         localStorage.setItem("refreshToken" , res.data.refresh_token);

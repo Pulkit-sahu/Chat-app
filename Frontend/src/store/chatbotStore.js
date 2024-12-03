@@ -21,11 +21,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
         try {
             loading.value = true;
             const authToken = localStorage.getItem('accessToken');
-<<<<<<< HEAD
-            const res = await axios.get('http://localhost:5000/chat/loaded', {
-=======
             const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/loaded', {
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
                 headers: {
                     Authorization: `Bearer ${authToken}`
                 }
@@ -86,11 +82,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
 
     const getProfileData = async () => {
         try {
-<<<<<<< HEAD
-            const res = await axios.get('http://localhost:5000/chat/info' , {
-=======
             const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/info' , {
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
                 headers : {
                     Authorization : `Bearer ${authToken}`
                 }
@@ -107,11 +99,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
 
     const setupSocket = () => {
         const authToken = localStorage.getItem('accessToken');
-<<<<<<< HEAD
-        socket.value = io('http://localhost:5000', {
-=======
         socket.value = io('https://chat-app-e0vz.onrender.com', {
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
             query: {
                 token: authToken
             },
@@ -180,21 +168,13 @@ const useChatbotStore = defineStore('chatbot' , () => {
             
             if(role == 'admin')
             {
-<<<<<<< HEAD
-                const res = await axios.get('http://localhost:5000/chat/users', {
-=======
                 const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/users', {
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
                     headers : {
                         Authorization : `Bearer ${authToken}`
                     }
                 })
                 userList.value = res.data;
-<<<<<<< HEAD
-                const res2 = await axios.get('http://localhost:5000/chat/admins', {
-=======
                 const res2 = await axios.get('https://chat-app-e0vz.onrender.com/chat/admins', {
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
                     headers : {
                         Authorization : `Bearer ${authToken}`
                     }
@@ -203,11 +183,7 @@ const useChatbotStore = defineStore('chatbot' , () => {
                 console.log(userList.value)
             }
             else{
-<<<<<<< HEAD
-                const res = await axios.get('http://localhost:5000/chat/admins', {
-=======
                 const res = await axios.get('https://chat-app-e0vz.onrender.com/chat/admins', {
->>>>>>> c93332ff6b90684965591d378372d066fd7c2938
                     headers : {
                         Authorization : `Bearer ${authToken}`
                     }
